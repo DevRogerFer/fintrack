@@ -34,12 +34,17 @@ export default [
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
       'react/jsx-no-target-blank': 'off',
+      'react/no-unescaped-entities': 'off',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
       ],
       'react/prop-types': 'off',
     },
+  },
+  {
+    files: ['src/components/ui/**'],
+    rules: { 'react-refresh/only-export-components': 'off' },
   },
   eslintConfigPrettier,
 ];
