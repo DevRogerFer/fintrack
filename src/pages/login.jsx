@@ -90,15 +90,15 @@ const LoginPage = () => {
               />
             </CardContent>
             <CardFooter>
-              <Button className="w-full">Criar conta</Button>
+              <Button className="w-full">Fazer login</Button>
             </CardFooter>
           </Card>
         </form>
       </Form>
       <div className="flex items-center justify-center">
-        <p className="text-center opacity-50">Possui conta?</p>
+        <p className="text-center opacity-50">Ainda não possui conta?</p>
         <Button variant="link" asChild>
-          <Link to="/login">Faça login</Link>
+          <Link to="/signup">Crie uma conta</Link>
         </Button>
       </div>
     </div>
