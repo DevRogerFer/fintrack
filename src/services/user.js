@@ -25,11 +25,6 @@ export const UserService = {
   },
   me: async () => {
     const response = await protectedApi.get('/users/me');
-    return {
-      id: response.data.id,
-      email: response.data.email,
-      first_name: response.data.first_name,
-      last_name: response.data.last_name,
-    };
+    return response.data;
   },
 };
