@@ -60,4 +60,19 @@ export const UserService = {
       lastName: response.data.last_name,
     };
   },
+  /**
+   * Retorna o balanço do usuário autenticado.
+   * @param {Object} input - Usuário a ser criado.
+   * @param {string} input.from - Data inicial do balanço.
+   * @param {string} input.to - Data final do balanço.
+   */
+  getBalance: async (input) => {
+    const queryParams = new URLSearchParams();
+    queryParams.set('from', input.from);
+    queryParams.set('to', input.to);
+    const response = await protectedApi.get(
+      `/users/me/balance?${queryParams.toString()}`
+    );
+    return response.data;
+  },
 };
