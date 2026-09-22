@@ -34,7 +34,7 @@ const Balance = () => {
       />
       {/* Ganhos */}
       <BalanceItem
-        label="Ganhos"
+        label="Receitas"
         amount={data?.earnings}
         icon={<TrendingUpIcon className="text-primary-green" size={16} />}
       />
