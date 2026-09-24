@@ -1,13 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DialogClose } from '@radix-ui/react-dialog';
+import { useMutation } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import {
+  Loader2Icon,
   PiggyBankIcon,
   PlusIcon,
   TrendingDownIcon,
   TrendingUpIcon,
 } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
+import { toast } from 'sonner';
 import z from 'zod';
 
 import {
@@ -19,6 +24,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { useAuthContext } from '@/contexts/auth';
+import { TransactionService } from '@/services/transaction';
 
 import { Button } from './button';
 import { DatePicker } from './date-picker';
@@ -42,28 +49,46 @@ const formSchema = z.object({
   date: z.date({
     required_error: 'A data é obrigatória',
   }),
-  type: z.enum(['REVENUE', 'EXPENSE', 'INVESTIMENT']),
+  type: z.enum(['EARNING', 'EXPENSE', 'INVESTIMENT']),
 });
 
 const AddTransactionButton = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAuthContext();
+  const { mutateAsync: createTransaction } = useMutation({
+    mutationKey: ['createTransaction'],
+    mutationFn: (input) => TransactionService.create(input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['balance', user.id],
+      });
+    },
+  });
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      amount: 0,
+      amount: 50,
       date: new Date(),
-      type: 'REVENUE',
+      type: 'EARNING',
     },
     shouldUnregister: true,
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      await createTransaction(data);
+      setDialogIsOpen(false);
+      toast.success('Transação criada com sucesso!');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <>
-      <Dialog>
+      <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
         <DialogTrigger asChild>
           <Button>
             <PlusIcon />
@@ -149,9 +174,9 @@ const AddTransactionButton = () => {
                         <Button
                           type="button"
                           variant={
-                            field.value === 'REVENUE' ? 'secondary' : 'outline'
+                            field.value === 'EARNING' ? 'secondary' : 'outline'
                           }
-                          onClick={() => field.onChange('REVENUE')}
+                          onClick={() => field.onChange('EARNING')}
                         >
                           <TrendingUpIcon className="text-primary-green" />
                           Receita
@@ -186,11 +211,23 @@ const AddTransactionButton = () => {
               />
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button type="reset" variant="secondary" className="w-full">
+                  <Button
+                    type="reset"
+                    variant="secondary"
+                    className="w-full"
+                    disabled={form.formState.isSubmitting}
+                  >
                     Cancelar
                   </Button>
                 </DialogClose>
-                <Button type="submit" className="w-full">
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting && (
+                    <Loader2Icon className="animate-spin" />
+                  )}
                   Adicionar
                 </Button>
               </DialogFooter>
