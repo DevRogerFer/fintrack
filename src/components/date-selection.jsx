@@ -29,11 +29,16 @@ const DateSelection = () => {
     // early return
     if (!date?.from || !date?.to) return;
     const queryParams = new URLSearchParams();
-    queryParams.set('from', formatDateToQueryParam(date.from));
-    queryParams.set('to', formatDateToQueryParam(date.to));
+    queryParams.set('from', formatDateToQueryParam(date.from)); // YYYY-MM-DD
+    queryParams.set('to', formatDateToQueryParam(date.to)); // YYYY-MM-DD
     navigate(`/?${queryParams.toString()}`);
     queryClient.invalidateQueries({
-      queryKey: ['balance', user?.id],
+      queryKey: [
+        'balance',
+        user?.id,
+        formatDateToQueryParam(date.from),
+        formatDateToQueryParam(date.to),
+      ],
     });
   }, [navigate, date, queryClient, user?.id]);
 
