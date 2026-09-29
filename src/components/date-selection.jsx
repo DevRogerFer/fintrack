@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { addMonths, format, isValid, parse } from 'date-fns';
+import { addMonths, format, isValid } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 
@@ -7,33 +7,29 @@ import { useAuthContext } from '@/contexts/auth';
 
 import { DatePickerWithRange } from './date-picker-with-range';
 
-const DATE_FORMAT = 'yyyy-MM-dd';
-
-const formatDateToQueryParam = (date) => format(date, DATE_FORMAT);
-
-// new Date(str) é permissivo demais (ex.: "123" vira o ano 123), por isso usamos
-// parse com formato estrito e conferimos se o resultado bate com o texto original
-const parseDateParam = (value) => {
-  if (!value) return null;
-  const parsedDate = parse(value, DATE_FORMAT, new Date());
-  if (!isValid(parsedDate) || formatDateToQueryParam(parsedDate) !== value) {
-    return null;
-  }
-  return parsedDate;
-};
+const formatDateToQueryParam = (date) => format(date, 'yyyy-MM-dd');
 
 const getInitialDateState = (searchParams) => {
   const defaultDate = {
     from: new Date(),
     to: addMonths(new Date(), 1),
   };
-  const from = parseDateParam(searchParams.get('from')); // YYYY-MM-DD
-  const to = parseDateParam(searchParams.get('to')); // YYYY-MM-DD
+  const from = searchParams.get('from'); // YYYY-MM-DD
+  const to = searchParams.get('to'); // YYYY-MM-DD
   // Caso não existam ou sejam inválidos os parâmetros na URL, retorna as datas padrão
   if (!from || !to) {
     return defaultDate;
   }
-  return { from, to };
+  // Verifica se as datas obtidas da URL são válidas
+  const datesAreInvalid = !isValid(new Date(from)) || !isValid(new Date(to));
+  if (datesAreInvalid) {
+    return defaultDate;
+  }
+  // Retorna as datas obtidas da URL, que são válidas
+  return {
+    from: new Date(from),
+    to: new Date(to),
+  };
 };
 
 const DateSelection = () => {
