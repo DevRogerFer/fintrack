@@ -21,8 +21,8 @@ import {
 } from '@/components/ui/dialog';
 import { useCreateTransactionForm } from '@/forms/hooks/transaction';
 
-import { Button } from './button';
-import { DatePicker } from './date-picker';
+import { Button } from './ui/button';
+import { DatePicker } from './ui/date-picker';
 import {
   Form,
   FormControl,
@@ -30,8 +30,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from './form';
-import { Input } from './input';
+} from './ui/form';
+import { Input } from './ui/input';
 
 const AddTransactionButton = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);

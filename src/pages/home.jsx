@@ -1,9 +1,9 @@
 import { Navigate } from 'react-router';
 
+import AddTransactionButton from '@/components/add-transaction-button';
 import Balance from '@/components/balance';
 import DateSelection from '@/components/date-selection';
 import Header from '@/components/header';
-import AddTransactionButton from '@/components/ui/add-transaction-button';
 import { useAuthContext } from '@/contexts/auth';
 
 const HomePage = () => {

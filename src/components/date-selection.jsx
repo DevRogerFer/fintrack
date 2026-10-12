@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router';
 
 import { useAuthContext } from '@/contexts/auth';
 
-import { DatePickerWithRange } from './date-picker-with-range';
+import { DatePickerWithRange } from './ui/date-picker-with-range';
 
 const formatDateToQueryParam = (date) => format(date, 'yyyy-MM-dd');
 
